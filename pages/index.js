@@ -1,33 +1,8 @@
 import appConfig from '../config.json';
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          list-style: none;
-        }
-        body {
-          font-family: 'Open Sans', sans-serif;
-        }
-        /* App fit Height */ 
-        html, body, #__next {
-          min-height: 100vh;
-          display: flex;
-          flex: 1;
-        }
-        #__next {
-          flex: 1;
-        }
-        #__next > * {
-          flex: 1;
-        }
-        /* ./App fit Height */ 
-      `}</style>
-    );
-}
+import React from 'react';
+import {useRouter} from 'next/router';
+
 
 
 function Titulo(props) {
@@ -60,16 +35,20 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-    const username = 'patriciaruffino';
+   /*  const username = 'patriciaruffino'; */
+   const [username, setUsername]= React.useState('patriciaruffino');
+   //um hook
+   const roteamento = useRouter();
+   console.log(useRouter())
 
     return (
         <>
-            <GlobalStyle />
+          
             <Box
                 styleSheet={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: appConfig.theme.colors.primary[500],
-                    backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+                    /* backgroundColor: appConfig.theme.colors.primary[500], */
+                    backgroundImage: 'url(https://preview.redd.it/rau8ofogtd661.jpg?width=960&crop=smart&auto=webp&s=3ff87b5746799f6c2012a6c804bd7a3735d9ada8)',
                     backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
                 }}
             >
@@ -91,17 +70,42 @@ export default function PaginaInicial() {
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function submit(event){
+                            event.preventDefault();
+                           /*  console.log("alguém submeteu alguma coisa") */
+                            roteamento.push("/chat")
+                        }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
                         }}
                     >
-                        <Titulo tag="h2">Boas vindas de volta!</Titulo>
+                        <Titulo tag="h2">Bem vindo(a) a Escola de Magia e Bruxaria de Hogwarts!</Titulo>
                         <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                             {appConfig.name}
                         </Text>
+                      {/*   <input
+                            type="text"
+                            value={username}
+                            onChange={function handler(event){
+                                console.log( event.target.value)
+                                //ler o novo valor da variável
+                                const valor = event.target.value;
+                                //renderiza o novo valor, o valor é trocado através do react
+                                setUsername(valor);
+                            }}
+                        /> */}
 
                         <TextField
+                         value={username}
+                         onChange={function handler(event){
+                            console.log( event.target.value)
+                            //ler o novo valor da variável
+                            const valor = event.target.value;
+                            //renderiza o novo valor, o valor é trocado através do react
+                            setUsername(valor);
+                        }}
+                        
                             fullWidth
                             textFieldColors={{
                                 neutral: {
@@ -114,7 +118,7 @@ export default function PaginaInicial() {
                         />
                         <Button
                             type='submit'
-                            label='Entrar'
+                            label='Alorromora'
                             fullWidth
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -149,6 +153,7 @@ export default function PaginaInicial() {
                                 marginBottom: '16px',
                             }}
                             src={`https://github.com/${username}.png`}
+                            
                         />
                         <Text
                             variant="body4"
@@ -160,6 +165,7 @@ export default function PaginaInicial() {
                             }}
                         >
                             {username}
+                         
                         </Text>
                     </Box>
                     {/* Photo Area */}
