@@ -83,9 +83,9 @@ export default function ChatPage() {
 
                     <Box
                         as="form"
-                        onSubmit={function submit(event){
+                        onSubmit={function submit(event) {
                             event.preventDefault();
-                           /*  console.log("alguém submeteu alguma coisa") */
+                            /*  console.log("alguém submeteu alguma coisa") */
                             handleNovaMensagem(mensagem);
                         }}
                         styleSheet={{
@@ -133,14 +133,14 @@ export default function ChatPage() {
                                 mainColor: appConfig.theme.colors.primary[500],
                                 mainColorLight: appConfig.theme.colors.primary[400],
                                 mainColorStrong: appConfig.theme.colors.primary[600],
-                                
-                                
+
+
                             }}
-                            
-                          
-                            
+
+
+
                         />
-                        
+
                     </Box>
                 </Box>
             </Box>
@@ -173,7 +173,7 @@ function Header() {
 }
 
 function MessageList(props) {
-    
+
 
     return (
         <Box
@@ -185,6 +185,9 @@ function MessageList(props) {
                 flex: 1,
                 color: appConfig.theme.colors.neutrals["000"],
                 marginBottom: "16px",
+                backgroundImage: 'url(https://i.pinimg.com/736x/e0/a6/3d/e0a63d1790d21bc3c3a62ed3073d79e0.jpg)',
+                backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+
             }}
         >
             {props.mensagens.map((mensagem) => {
@@ -197,8 +200,10 @@ function MessageList(props) {
                             borderRadius: "5px",
                             padding: "6px",
                             marginBottom: "12px",
+                            marginLeft: "12px",
                             hover: {
                                 backgroundColor: appConfig.theme.colors.neutrals[700],
+
                             },
                         }}
                     >
