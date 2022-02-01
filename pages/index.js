@@ -73,7 +73,7 @@ export default function PaginaInicial() {
                         onSubmit={function submit(event){
                             event.preventDefault();
                            /*  console.log("alguém submeteu alguma coisa") */
-                            roteamento.push("/chat")
+                            roteamento.push(`/chat?username=${username}`)
                         }}
                         styleSheet={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
@@ -98,7 +98,7 @@ export default function PaginaInicial() {
 
                         <TextField
                          value={username}
-                         onChange={function handler(event){
+                         onChange={function (event){
                             console.log( event.target.value)
                             //ler o novo valor da variável
                             const valor = event.target.value;

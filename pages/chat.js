@@ -2,7 +2,11 @@ import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
 import { createClient } from '@supabase/supabase-js';
-import { useEffect } from "react";
+
+import { useRouter } from 'next/router';
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
+/* import ButtonEnviar from "../src/components/ButtonEnviar"; */
+
 
 
 
@@ -12,31 +16,61 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 
 
+function escutaMensagemEmTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('INSERT', (respostaLive) => {
+            adicionaMensagem(respostaLive.new)
 
+        })
+        .subscribe()
+}
 
 export default function ChatPage() {
+    const roteamento = useRouter();
+    const usuarioLogado = roteamento.query.username;
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
+
 
     React.useEffect(() => {
         supabaseClient
             .from('mensagens')
             .select('*')
-            .order('id', {ascending: false})
+            .order('id', { ascending: false })
             .then(({ data }) => {
-                console.log('Dados da consulta:', data)
+                // console.log('Dados da consulta:', data)
                 setListaDeMensagens(data)
 
             })
+        const subscription = escutaMensagemEmTempoReal((novaMensagem) => {
+            console.log('Nova mensagem:', novaMensagem);
+            console.log('listaDeMensagens:', listaDeMensagens);
+            setListaDeMensagens((valorAtualDaLista) => {
+                console.log('valorAtualDaLista:', valorAtualDaLista);
+                return [
+
+                    novaMensagem,
+                    ...valorAtualDaLista,
+                ]
+
+            });
+        });
+
+
+        return () => {
+            subscription.unsubscribe();
+        }
 
     }, []);
+
 
 
 
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
             //id: listaDeMensagens.length + 1,
-            de: 'patriciaruffino',
+            de: usuarioLogado,
             texto: novaMensagem,
 
         };
@@ -47,19 +81,13 @@ export default function ChatPage() {
                 mensagem
             ])
             .then(({ data }) => {
-                console.log("criando mensansagem:",data)
-                setListaDeMensagens([
-                    data[0],
-                    ...listaDeMensagens,
-                ])
-            })
+                console.log("criando mensansagem:", data)
+            });
 
         setMensagem('');
 
     }
-    // Sua lógica vai aqui
 
-    // ./Sua lógica vai aqui
     return (
         <Box
             styleSheet={{
@@ -134,17 +162,12 @@ export default function ChatPage() {
                             value={mensagem}
                             onChange={(event) => {
                                 const valor = event.target.value;
-
                                 setMensagem(valor);
-                                console.log(valor)
-
-
 
                             }}
                             onKeyPress={(event) => {
                                 if (event.key === 'Enter') {
-                                    event.preventDefault(event);
-                                    console.log(event)
+                                    event.preventDefault();
                                     handleNovaMensagem(mensagem);
                                 }
 
@@ -162,21 +185,13 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
-                        <Button
-                            type='submit'
-                            label='enviar'
-                            buttonColors={{
-                                contrastColor: appConfig.theme.colors.neutrals["000"],
-                                mainColor: appConfig.theme.colors.primary[500],
-                                mainColorLight: appConfig.theme.colors.primary[400],
-                                mainColorStrong: appConfig.theme.colors.primary[600],
-
-
+                        <ButtonSendSticker
+                            onStickerClock={(sticker) => {
+                                //console.log('Salva o sticker no banco', sticker);
+                                handleNovaMensagem(':sticker:' + sticker)
                             }}
-
-
-
                         />
+                        {/*     <ButtonEnviar /> */}
 
                     </Box>
                 </Box>
@@ -211,7 +226,6 @@ function Header() {
 
 function MessageList(props) {
 
-
     return (
         <Box
             tag="ul"
@@ -227,6 +241,7 @@ function MessageList(props) {
 
             }}
         >
+
             {props.mensagens.map((mensagem) => {
                 return (
 
@@ -259,7 +274,10 @@ function MessageList(props) {
                                 }}
                                 src={`https://github.com/${mensagem.de}.png`}
                             />
-                            <Text tag="strong">{mensagem.de}</Text>
+
+                            <Text tag="strong">
+                                {mensagem.de}
+                                </Text>
                             <Text
                                 styleSheet={{
                                     fontSize: "10px",
@@ -268,14 +286,26 @@ function MessageList(props) {
                                 }}
                                 tag="span"
                             >
-                                {new Date().toLocaleDateString()}
+                                {(new Date().toLocaleDateString())}
                             </Text>
                         </Box>
-                        {mensagem.texto}
+                        {mensagem.texto.startsWith(':stiker:')
+                            ? (
+                                <Image src={mensagem.texto.replace(':sticker:', '')} />
+                            )
+                            : (
+                                mensagem.texto
+                            )}
                     </Text>
                 )
             })}
-
         </Box>
     );
 }
+
+
+
+
+
+
+
