@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button, Text, Image } from '@skynexui/components';
 import appConfig from '../../config.json';
 
+
 export function ButtonSendSticker(props) {
   const [isOpen, setOpenState] = React.useState('');
 
@@ -24,13 +25,13 @@ export function ButtonSendSticker(props) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: appConfig.theme.colors.neutrals[300],
+          backgroundColor: appConfig.theme.colors.primary[500],
           filter: isOpen ? 'grayscale(0)' : 'grayscale(1)',
           hover: {
             filter: 'grayscale(0)',
           }
         }}
-        label="😋"
+        label="😂"
         onClick={() => setOpenState(!isOpen)}
       />
       {isOpen && (
@@ -40,7 +41,7 @@ export function ButtonSendSticker(props) {
             flexDirection: 'column',
             borderRadius: '5px',
             position: 'absolute',
-            backgroundColor: appConfig.theme.colors.neutrals[800],
+            backgroundColor: appConfig.theme.colors.neutrals[500],
             width: {
               xs: '200px',
               sm: '290px',
